@@ -1,15 +1,17 @@
 {
-  "name": "learn-starter",
+  "name": "nextjs95",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "vercel-deploy": "next build && next export"
   },
   "dependencies": {
     "next": "9.5.3",
     "react": "16.13.1",
-    "react-dom": "16.13.1"
+    "react-dom": "16.13.1",
+    "swiper": "^6.3.2"
   }
 }

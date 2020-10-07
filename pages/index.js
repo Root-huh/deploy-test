@@ -1,209 +1,226 @@
-import Head from 'next/head'
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
 
 export default function Home() {
+  const [currentTab, setCurrentTab] = useState(TAB_LIST[0].key);
+  const containerRef = useRef(null);
+  const swiperRef = useRef(null);
+
+  useEffect(() => {
+    function handleScroll() {
+      const scrollY = window.pageYOffset;
+      const container = containerRef.current;
+      if (scrollY >= META_HEIGHT) {
+        window.scrollTo(0, META_HEIGHT);
+        !container.classList.contains(CONTAINER_FIXED_CLASSNAME) &&
+          container.classList.add(CONTAINER_FIXED_CLASSNAME);
+      } else {
+        container.classList.contains(CONTAINER_FIXED_CLASSNAME) &&
+          container.classList.remove(CONTAINER_FIXED_CLASSNAME);
+      }
+    }
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  const freezeAllSlides = useCallback(() => {
+    swiperRef.current.slides.forEach(slide => {
+      slide.style.overflowY = "hidden";
+    });
+  }, []);
+  const unFreezeAllSlides = useCallback(() => {
+    swiperRef.current.slides.forEach((slide, index) => {
+      index === swiperRef.current.activeIndex &&
+        (slide.style.overflowY = "auto");
+    });
+  }, []);
+
   return (
-    <div className="container">
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main>
-        <h1 className="title">
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className="description">
-          Get started by editing <code>pages/index.js</code>
-        </p>
-
-        <div className="grid">
-          <a href="https://nextjs.org/docs" className="card">
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className="card">
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className="card"
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className="card"
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+    <div id="root">
+      <header>Header</header>
+      <div id="meta" />
+      <div id="container" ref={containerRef}>
+        <div id="tabs">
+          {TAB_LIST.map(({ key, text }, index) => (
+            <div
+              key={key}
+              className={currentTab === key && "active"}
+              onClick={() => {
+                setCurrentTab(key);
+                freezeAllSlides();
+                swiperRef.current.slideTo(index);
+              }}
+            >
+              {text}
+            </div>
+          ))}
         </div>
-      </main>
-
-      <footer>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className="logo" />
-        </a>
-      </footer>
-
-      <style jsx>{`
-        .container {
-          min-height: 100vh;
-          padding: 0 0.5rem;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-        }
-
-        main {
-          padding: 5rem 0;
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-        }
-
-        footer {
-          width: 100%;
-          height: 100px;
-          border-top: 1px solid #eaeaea;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        footer img {
-          margin-left: 0.5rem;
-        }
-
-        footer a {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        a {
-          color: inherit;
-          text-decoration: none;
-        }
-
-        .title a {
-          color: #0070f3;
-          text-decoration: none;
-        }
-
-        .title a:hover,
-        .title a:focus,
-        .title a:active {
-          text-decoration: underline;
-        }
-
-        .title {
-          margin: 0;
-          line-height: 1.15;
-          font-size: 4rem;
-        }
-
-        .title,
-        .description {
-          text-align: center;
-        }
-
-        .description {
-          line-height: 1.5;
-          font-size: 1.5rem;
-        }
-
-        code {
-          background: #fafafa;
-          border-radius: 5px;
-          padding: 0.75rem;
-          font-size: 1.1rem;
-          font-family: Menlo, Monaco, Lucida Console, Liberation Mono,
-            DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
-        }
-
-        .grid {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-wrap: wrap;
-
-          max-width: 800px;
-          margin-top: 3rem;
-        }
-
-        .card {
-          margin: 1rem;
-          flex-basis: 45%;
-          padding: 1.5rem;
-          text-align: left;
-          color: inherit;
-          text-decoration: none;
-          border: 1px solid #eaeaea;
-          border-radius: 10px;
-          transition: color 0.15s ease, border-color 0.15s ease;
-        }
-
-        .card:hover,
-        .card:focus,
-        .card:active {
-          color: #0070f3;
-          border-color: #0070f3;
-        }
-
-        .card h3 {
-          margin: 0 0 1rem 0;
-          font-size: 1.5rem;
-        }
-
-        .card p {
-          margin: 0;
-          font-size: 1.25rem;
-          line-height: 1.5;
-        }
-
-        .logo {
-          height: 1em;
-        }
-
-        @media (max-width: 600px) {
-          .grid {
-            width: 100%;
-            flex-direction: column;
-          }
-        }
-      `}</style>
-
+        <div id="tab-content">
+          <Swiper
+            spaceBetween={0}
+            slidesPerView={1}
+            initialSlide={getTabIndex(currentTab)}
+            onSlideChange={swiper => {
+              setCurrentTab(TAB_LIST[swiper.activeIndex].key);
+              swiperRef.current = swiper;
+            }}
+            onSwiper={swiper => {
+              swiperRef.current = swiper;
+            }}
+            onTouchStart={() => {
+              freezeAllSlides();
+            }}
+            onSlideChangeTransitionEnd={() => {
+              unFreezeAllSlides();
+            }}
+          >
+            {TAB_LIST.map(({ key, text }, _index) => (
+              <SwiperSlide key={key}>
+                {Array.from({ length: TAB_LENGTH_LIST[_index] }).map(
+                  (_, index) => (
+                    <p key={index}>
+                      This is {text} #{index}
+                    </p>
+                  )
+                )}
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
+      </div>
       <style jsx global>{`
+        * {
+          margin: 0 auto;
+          padding: 0;
+        }
+
         html,
         body {
-          padding: 0;
-          margin: 0;
-          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
-            Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
-            sans-serif;
+          height: 100%;
+          position: relative;
         }
 
-        * {
-          box-sizing: border-box;
+        body > div,
+        #root {
+          height: 100%;
+        }
+
+        .swiper-container {
+          width: 100%;
+          height: 100%;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .swiper-wrapper {
+          width: 100%;
+          height: 100%;
+          position: relative;
+          display: flex;
+          z-index: 1;
+        }
+
+        .swiper-slide {
+          width: 100%;
+          height: 100%;
+          position: relative;
+          flex-shrink: 0;
+        }
+
+        .${CONTAINER_FIXED_CLASSNAME} .swiper-slide {
+          overflow-x: hidden;
+          overflow-y: auto;
+        }
+      `}</style>
+      <style jsx>{`
+        header {
+          height: 50px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          background-color: #444;
+          color: white;
+          top: 0;
+        }
+
+        #meta {
+          height: ${META_HEIGHT}px;
+          background-color: black;
+          top: ${HEADER_HEIGHT}px;
+        }
+
+        header,
+        #meta {
+          width: 100%;
+          position: fixed;
+          left: 0;
+        }
+
+        #container {
+          position: relative;
+          top: ${HEADER_HEIGHT + META_HEIGHT}px;
+          background-color: white;
+          height: 100%;
+        }
+
+        #tabs {
+          display: flex;
+          height: ${TAB_HEIGHT}px;
+        }
+        #tabs > div {
+          flex: auto;
+          display: flex;
+          cursor: pointer;
+          align-items: center;
+          background-color: #f5f5f5;
+          padding: 0 8px;
+        }
+        #tabs > div.active {
+          background-color: white;
+        }
+
+        #tab-content {
+          height: calc(100% - ${META_HEIGHT - HEADER_HEIGHT - TAB_HEIGHT}px);
         }
       `}</style>
     </div>
-  )
+  );
+}
+
+const HEADER_HEIGHT = 50;
+const META_HEIGHT = 240;
+const TAB_HEIGHT = 50;
+const CONTAINER_FIXED_CLASSNAME = "container-fixed";
+
+const TAB_LIST = [
+  {
+    key: "tab-1",
+    text: "Tab1",
+  },
+  {
+    key: "tab-2",
+    text: "Tab2",
+  },
+  {
+    key: "tab-3",
+    text: "Tab3",
+  },
+];
+const TAB_LENGTH_LIST = [100, 50, 200];
+
+function getTabIndex(key) {
+  return TAB_LIST.findIndex(item => item.key === key);
+}
+
+function getScrollTopList(elements) {
+  const arr = [];
+  elements.forEach(element => {
+    arr.push(element.scrollTop);
+  });
+  return arr;
 }
