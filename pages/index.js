@@ -71,7 +71,7 @@ export default function Home() {
             onSwiper={swiper => {
               swiperRef.current = swiper;
             }}
-            onTouchStart={() => {
+            onSliderMove={() => {
               freezeAllSlides();
             }}
             onSlideChangeTransitionEnd={() => {
