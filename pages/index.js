@@ -12,11 +12,19 @@ export default function Home() {
       const container = containerRef.current;
       if (scrollY >= META_HEIGHT) {
         window.scrollTo(0, META_HEIGHT);
-        !container.classList.contains(CONTAINER_FIXED_CLASSNAME) &&
+        if (
+          container &&
+          !container.classList.contains(CONTAINER_FIXED_CLASSNAME)
+        ) {
           container.classList.add(CONTAINER_FIXED_CLASSNAME);
-      } else {
-        container.classList.contains(CONTAINER_FIXED_CLASSNAME) &&
-          container.classList.remove(CONTAINER_FIXED_CLASSNAME);
+          unFreezeAllSlides();
+        }
+      } else if (
+        container &&
+        container.classList.contains(CONTAINER_FIXED_CLASSNAME)
+      ) {
+        container.classList.remove(CONTAINER_FIXED_CLASSNAME);
+        freezeAllSlides();
       }
     }
     window.addEventListener("scroll", handleScroll);
@@ -28,15 +36,17 @@ export default function Home() {
   }, []);
 
   const freezeAllSlides = useCallback(() => {
-    swiperRef.current.slides.forEach(slide => {
-      slide.style.overflowY = "hidden";
-    });
+    swiperRef.current &&
+      swiperRef.current.slides.forEach(slide => {
+        slide.style.overflowY = "hidden";
+      });
   }, []);
   const unFreezeAllSlides = useCallback(() => {
-    swiperRef.current.slides.forEach((slide, index) => {
-      index === swiperRef.current.activeIndex &&
-        (slide.style.overflowY = "auto");
-    });
+    swiperRef.current &&
+      swiperRef.current.slides.forEach((slide, index) => {
+        index === swiperRef.current.activeIndex &&
+          (slide.style.overflowY = "auto");
+      });
   }, []);
 
   return (
@@ -75,7 +85,11 @@ export default function Home() {
               freezeAllSlides();
             }}
             onSlideChangeTransitionEnd={() => {
-              unFreezeAllSlides();
+              containerRef.current &&
+                containerRef.current.classList.contains(
+                  CONTAINER_FIXED_CLASSNAME
+                ) &&
+                unFreezeAllSlides();
             }}
           >
             {TAB_LIST.map(({ key, text }, _index) => (
@@ -129,11 +143,7 @@ export default function Home() {
           height: 100%;
           position: relative;
           flex-shrink: 0;
-        }
-
-        .${CONTAINER_FIXED_CLASSNAME} .swiper-slide {
-          overflow-x: hidden;
-          overflow-y: auto;
+          overflow: hidden;
         }
       `}</style>
       <style jsx>{`
