@@ -6,34 +6,34 @@ export default function Home() {
   const containerRef = useRef(null);
   const swiperRef = useRef(null);
 
-  useEffect(() => {
-    function handleScroll() {
-      const scrollY = window.pageYOffset;
-      const container = containerRef.current;
-      if (scrollY >= META_HEIGHT) {
-        window.scrollTo(0, META_HEIGHT);
-        if (
-          container &&
-          !container.classList.contains(CONTAINER_FIXED_CLASSNAME)
-        ) {
-          container.classList.add(CONTAINER_FIXED_CLASSNAME);
-          unFreezeAllSlides();
-        }
-      } else if (
-        container &&
-        container.classList.contains(CONTAINER_FIXED_CLASSNAME)
-      ) {
-        container.classList.remove(CONTAINER_FIXED_CLASSNAME);
-        freezeAllSlides();
-      }
-    }
-    window.addEventListener("scroll", handleScroll);
-    handleScroll();
+  // useEffect(() => {
+  //   function handleScroll() {
+  //     const scrollY = window.pageYOffset;
+  //     const container = containerRef.current;
+  //     if (scrollY >= META_HEIGHT) {
+  //       window.scrollTo(0, META_HEIGHT);
+  //       if (
+  //         container &&
+  //         !container.classList.contains(CONTAINER_FIXED_CLASSNAME)
+  //       ) {
+  //         container.classList.add(CONTAINER_FIXED_CLASSNAME);
+  //         unFreezeAllSlides();
+  //       }
+  //     } else if (
+  //       container &&
+  //       container.classList.contains(CONTAINER_FIXED_CLASSNAME)
+  //     ) {
+  //       container.classList.remove(CONTAINER_FIXED_CLASSNAME);
+  //       freezeAllSlides();
+  //     }
+  //   }
+  //   window.addEventListener("scroll", handleScroll);
+  //   handleScroll();
 
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener("scroll", handleScroll);
+  //   };
+  // }, []);
 
   const freezeAllSlides = useCallback(() => {
     swiperRef.current &&
@@ -41,7 +41,7 @@ export default function Home() {
         slide.style.overflowY = "hidden";
       });
   }, []);
-  const unFreezeAllSlides = useCallback(() => {
+  const unFreezeActiveSlide = useCallback(() => {
     swiperRef.current &&
       swiperRef.current.slides.forEach((slide, index) => {
         index === swiperRef.current.activeIndex &&
@@ -51,8 +51,6 @@ export default function Home() {
 
   return (
     <div id="root">
-      <header>Header</header>
-      <div id="meta" />
       <div id="container" ref={containerRef}>
         <div id="tabs">
           {TAB_LIST.map(({ key, text }, index) => (
@@ -85,11 +83,11 @@ export default function Home() {
               freezeAllSlides();
             }}
             onSlideChangeTransitionEnd={() => {
-              containerRef.current &&
-                containerRef.current.classList.contains(
-                  CONTAINER_FIXED_CLASSNAME
-                ) &&
-                unFreezeAllSlides();
+              // containerRef.current &&
+              //   containerRef.current.classList.contains(
+              //     CONTAINER_FIXED_CLASSNAME
+              //   ) &&
+              unFreezeActiveSlide();
             }}
           >
             {TAB_LIST.map(({ key, text }, _index) => (
@@ -143,37 +141,14 @@ export default function Home() {
           height: 100%;
           position: relative;
           flex-shrink: 0;
-          overflow: hidden;
+          overflow-x: hidden;
+          overflow-y: auto;
         }
       `}</style>
       <style jsx>{`
-        header {
-          height: 50px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          text-align: center;
-          background-color: #444;
-          color: white;
-          top: 0;
-        }
-
-        #meta {
-          height: ${META_HEIGHT}px;
-          background-color: black;
-          top: ${HEADER_HEIGHT}px;
-        }
-
-        header,
-        #meta {
-          width: 100%;
-          position: fixed;
-          left: 0;
-        }
-
         #container {
           position: relative;
-          top: ${HEADER_HEIGHT + META_HEIGHT}px;
+          top: 0;
           background-color: white;
           height: 100%;
         }
@@ -195,15 +170,13 @@ export default function Home() {
         }
 
         #tab-content {
-          height: calc(100% - ${META_HEIGHT - HEADER_HEIGHT - TAB_HEIGHT}px);
+          height: calc(100% - ${TAB_HEIGHT}px);
         }
       `}</style>
     </div>
   );
 }
 
-const HEADER_HEIGHT = 50;
-const META_HEIGHT = 240;
 const TAB_HEIGHT = 50;
 const CONTAINER_FIXED_CLASSNAME = "container-fixed";
 
