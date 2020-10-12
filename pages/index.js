@@ -1,39 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 export default function Home() {
   const [currentTab, setCurrentTab] = useState(TAB_LIST[0].key);
   const containerRef = useRef(null);
   const swiperRef = useRef(null);
-
-  // useEffect(() => {
-  //   function handleScroll() {
-  //     const scrollY = window.pageYOffset;
-  //     const container = containerRef.current;
-  //     if (scrollY >= META_HEIGHT) {
-  //       window.scrollTo(0, META_HEIGHT);
-  //       if (
-  //         container &&
-  //         !container.classList.contains(CONTAINER_FIXED_CLASSNAME)
-  //       ) {
-  //         container.classList.add(CONTAINER_FIXED_CLASSNAME);
-  //         unFreezeAllSlides();
-  //       }
-  //     } else if (
-  //       container &&
-  //       container.classList.contains(CONTAINER_FIXED_CLASSNAME)
-  //     ) {
-  //       container.classList.remove(CONTAINER_FIXED_CLASSNAME);
-  //       freezeAllSlides();
-  //     }
-  //   }
-  //   window.addEventListener("scroll", handleScroll);
-  //   handleScroll();
-
-  //   return () => {
-  //     window.removeEventListener("scroll", handleScroll);
-  //   };
-  // }, []);
+  const isSliding = useRef(false);
 
   const freezeAllSlides = useCallback(() => {
     swiperRef.current &&
@@ -72,22 +44,30 @@ export default function Home() {
             spaceBetween={0}
             slidesPerView={1}
             initialSlide={getTabIndex(currentTab)}
-            onSlideChange={swiper => {
-              setCurrentTab(TAB_LIST[swiper.activeIndex].key);
-              swiperRef.current = swiper;
-            }}
             onSwiper={swiper => {
               swiperRef.current = swiper;
             }}
-            onSliderMove={() => {
-              freezeAllSlides();
+            onSliderMove={swiper => {
+              // isSliding: 돔 접근 코드 반복 수행 방지
+              // translate: 실제 움직임이 있었는지 확인하기 위함.
+              //  (움직임이 없으면 onTransitionEnd, onSlideChangeTransitionEnd 이벤트가 동작하지 않음)
+              !isSliding.current &&
+                Math.abs(swiper.translate) !==
+                  Math.abs(swiper.slidesGrid[swiper.activeIndex]) &&
+                freezeAllSlides();
+              isSliding.current = true;
             }}
             onSlideChangeTransitionEnd={() => {
-              // containerRef.current &&
-              //   containerRef.current.classList.contains(
-              //     CONTAINER_FIXED_CLASSNAME
-              //   ) &&
               unFreezeActiveSlide();
+              isSliding.current = false;
+            }}
+            onTransitionEnd={() => {
+              isSliding.current && unFreezeActiveSlide();
+              isSliding.current = false;
+            }}
+            onSlideChange={swiper => {
+              setCurrentTab(TAB_LIST[swiper.activeIndex].key);
+              swiperRef.current = swiper;
             }}
           >
             {TAB_LIST.map(({ key, text }, _index) => (
@@ -178,8 +158,6 @@ export default function Home() {
 }
 
 const TAB_HEIGHT = 50;
-const CONTAINER_FIXED_CLASSNAME = "container-fixed";
-
 const TAB_LIST = [
   {
     key: "tab-1",
