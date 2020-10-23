@@ -1,93 +1,79 @@
-import { useCallback, useRef, useState } from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
+import { useCallback, useEffect, useRef } from "react";
 
 export default function Home() {
-  const [currentTab, setCurrentTab] = useState(TAB_LIST[0].key);
   const containerRef = useRef(null);
-  const swiperRef = useRef(null);
-  const isSliding = useRef(false);
+  const itemListRef = useRef();
+  const parallaxListRef = useRef();
 
-  const freezeAllSlides = useCallback(() => {
-    swiperRef.current &&
-      swiperRef.current.slides.forEach(slide => {
-        slide.style.overflowY = "hidden";
-      });
+  const refreshState = useCallback(() => {
+    if (!itemListRef.current) {
+      itemListRef.current = document.querySelectorAll(
+        "[id*=parallax-wrapper-]"
+      );
+      parallaxListRef.current = document.querySelectorAll(
+        "[id*=parallax-item-]"
+      );
+    }
+    if (
+      !itemListRef.current ||
+      !parallaxListRef.current ||
+      !containerRef.current
+    ) {
+      return;
+    }
+
+    const container = containerRef.current;
+    const containerWidth = container.offsetWidth;
+    const containerHeight = container.offsetHeight;
+
+    const column = containerWidth / itemListRef.current[0].offsetWidth;
+    const diffTime = 2;
+    const itemPerLeft = (containerWidth / diffTime / column) * diffTime;
+
+    const length = itemListRef.current.length;
+    const images = ["images/1.png", "images/2.jpg", "images/3.jpg"];
+    for (let i = 0; i < length; i += 1) {
+      const parallax = parallaxListRef.current[i];
+
+      parallax.style.width = `${containerWidth}px`;
+      parallax.style.height = `${containerHeight}px`;
+
+      parallax.style.left = `-${itemPerLeft * (i % column)}px`;
+      parallax.style.backgroundImage = `url(${
+        images[Math.floor(Math.random() * images.length)]
+      })`;
+    }
   }, []);
-  const unFreezeActiveSlide = useCallback(() => {
-    swiperRef.current &&
-      swiperRef.current.slides.forEach((slide, index) => {
-        index === swiperRef.current.activeIndex &&
-          (slide.style.overflowY = "auto");
-      });
+
+  useEffect(() => {
+    function handleResize() {
+      refreshState();
+    }
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   return (
     <div id="root">
-      <div id="container" ref={containerRef}>
-        <div id="tabs">
-          {TAB_LIST.map(({ key, text }, index) => (
-            <div
-              key={key}
-              className={currentTab === key && "active"}
-              onClick={() => {
-                setCurrentTab(key);
-                freezeAllSlides();
-                swiperRef.current.slideTo(index);
-              }}
-            >
-              {text}
+      <div className="container" ref={containerRef}>
+        <div className="wrapper">
+          {ITEMS.map((_, index) => (
+            <div key={index} className="item" id={`parallax-wrapper-${index}`}>
+              <div className="parallax" id={`parallax-item-${index}`} />
+              <img src="images/front.png" alt="" className="frontImage" />
             </div>
           ))}
-        </div>
-        <div id="tab-content">
-          <Swiper
-            spaceBetween={0}
-            slidesPerView={1}
-            initialSlide={getTabIndex(currentTab)}
-            onSwiper={swiper => {
-              swiperRef.current = swiper;
-            }}
-            onSliderMove={swiper => {
-              // isSliding: 돔 접근 코드 반복 수행 방지
-              // translate: 실제 움직임이 있었는지 확인하기 위함.
-              //  (움직임이 없으면 onTransitionEnd, onSlideChangeTransitionEnd 이벤트가 동작하지 않음)
-              !isSliding.current &&
-                Math.abs(swiper.translate) !==
-                  Math.abs(swiper.slidesGrid[swiper.activeIndex]) &&
-                freezeAllSlides();
-              isSliding.current = true;
-            }}
-            onSlideChangeTransitionEnd={() => {
-              unFreezeActiveSlide();
-              isSliding.current = false;
-            }}
-            onTransitionEnd={() => {
-              isSliding.current && unFreezeActiveSlide();
-              isSliding.current = false;
-            }}
-            onSlideChange={swiper => {
-              setCurrentTab(TAB_LIST[swiper.activeIndex].key);
-              swiperRef.current = swiper;
-            }}
-          >
-            {TAB_LIST.map(({ key, text }, _index) => (
-              <SwiperSlide key={key}>
-                {Array.from({ length: TAB_LENGTH_LIST[_index] }).map(
-                  (_, index) => (
-                    <p key={index}>
-                      This is {text} #{index}
-                    </p>
-                  )
-                )}
-              </SwiperSlide>
-            ))}
-          </Swiper>
         </div>
       </div>
       <style jsx global>{`
         * {
           margin: 0 auto;
           padding: 0;
+          box-sizing: border-box;
         }
 
         html,
@@ -100,88 +86,69 @@ export default function Home() {
         #root {
           height: 100%;
         }
-
-        .swiper-container {
-          width: 100%;
-          height: 100%;
-          position: relative;
-          overflow: hidden;
-        }
-
-        .swiper-wrapper {
-          width: 100%;
-          height: 100%;
-          position: relative;
-          display: flex;
-          z-index: 1;
-        }
-
-        .swiper-slide {
-          width: 100%;
-          height: 100%;
-          position: relative;
-          flex-shrink: 0;
-          overflow-x: hidden;
-          overflow-y: auto;
-        }
       `}</style>
       <style jsx>{`
-        #container {
+        .container {
+          border-bottom: solid 2px black;
+          border-top: solid 2px black;
+          height: 100vh;
+          overflow-x: hidden;
+          overflow-y: auto;
+          perspective: 1px;
+          perspective-origin: 0 0;
           position: relative;
-          top: 0;
-          background-color: white;
+          transform-style: preserve-3d;
+          width: 100%;
+        }
+
+        .wrapper {
+          display: flex;
+          flex-wrap: wrap;
           height: 100%;
+          position: relative;
+          transform-style: preserve-3d;
+          width: 100%;
         }
 
-        #tabs {
-          display: flex;
-          height: ${TAB_HEIGHT}px;
+        .item {
+          border-bottom: solid 2px black;
+          border-right: solid 2px black;
+          flex: 0 0 50%;
+          height: 600px;
+          overflow: hidden;
+          position: relative;
+          transform-style: preserve-3d;
         }
-        #tabs > div {
-          flex: auto;
-          display: flex;
-          cursor: pointer;
-          align-items: center;
-          background-color: #f5f5f5;
-          padding: 0 8px;
-        }
-        #tabs > div.active {
-          background-color: white;
+        .item:nth-of-type(2n + 1) {
+          border-left: solid 2px black;
         }
 
-        #tab-content {
-          height: calc(100% - ${TAB_HEIGHT}px);
+        .parallax {
+          background-size: cover;
+          height: 100%;
+          left: 0;
+          position: absolute;
+          top: 0;
+          transform: translateZ(-1px) scale(2);
+          transform-origin: 0 0;
+          width: 100%;
+          z-index: 0;
+        }
+
+        .frontImage {
+          bottom: 0;
+          left: 50%;
+          position: absolute;
+          width: 100%;
+          max-width: 500px;
+          z-index: 1;
+          transform: translateX(-50%);
         }
       `}</style>
     </div>
   );
 }
 
-const TAB_HEIGHT = 50;
-const TAB_LIST = [
-  {
-    key: "tab-1",
-    text: "Tab1",
-  },
-  {
-    key: "tab-2",
-    text: "Tab2",
-  },
-  {
-    key: "tab-3",
-    text: "Tab3",
-  },
-];
-const TAB_LENGTH_LIST = [100, 50, 200];
+const ITEM_LENGTH = 4 * 20;
 
-function getTabIndex(key) {
-  return TAB_LIST.findIndex(item => item.key === key);
-}
-
-function getScrollTopList(elements) {
-  const arr = [];
-  elements.forEach(element => {
-    arr.push(element.scrollTop);
-  });
-  return arr;
-}
+const ITEMS = Array(ITEM_LENGTH).fill("");
