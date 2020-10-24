@@ -12,7 +12,7 @@ export default function Home2() {
               <div className="title">Title {index + 1}</div>
             </div>
             {index > 0 && (
-              <div className="layer layer_back">
+              <div className="layer_back">
                 <div className="title">Back Title {index + 1}</div>
               </div>
             )}
@@ -32,24 +32,26 @@ export default function Home2() {
         }
 
         body > div {
-          width: 100%;
           height: 100vh;
         }
       `}</style>
       <style jsx>{`
+        #root {
+          height: 100%;
+        }
+
         #parallax {
-          height: 100vh;
+          height: 100%;
           overflow-x: hidden;
           overflow-y: auto;
           perspective: 300px;
-          -webkit-perspective: 300px;
         }
 
         .group {
           height: 100vh;
           position: relative;
           transform-style: preserve-3d;
-          -webkit-transform-style: preserve-3d;
+          overflow: hidden;
         }
 
         .layer {
@@ -59,12 +61,15 @@ export default function Home2() {
           top: 0;
           bottom: 0;
           transform: translateZ(0);
-          -webkit-transform: translateZ(0);
           z-index: 4;
         }
-        .layer.layer_back {
+        .layer_back {
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 0;
+          bottom: 0;
           transform: translateZ(-300px) scale(2);
-          -webkit-transform: translateZ(-300px) scale(2);
           z-index: 3;
         }
 
@@ -73,7 +78,6 @@ export default function Home2() {
           left: 50%;
           top: 50%;
           transform: translate(-50%, -50%);
-          -webkit-transform: translate(-50%, -50%);
           font-size: 20px;
           font-weight: bold;
         }
@@ -84,10 +88,10 @@ export default function Home2() {
         .group:nth-of-type(2) .layer_back {
           background-color: lightblue;
         }
-        .group:nth-of-type(3) .layer_back {
+        .group:nth-of-type(3).layer_back {
           background-color: lightgreen;
         }
-        .group:nth-of-type(4) .layer_back {
+        .group:nth-of-type(4).layer_back {
           background-color: lightpink;
         }
       `}</style>
