@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
+import Nav from "../src/component/Nav";
 
 export default function Home() {
   const containerRef = useRef(null);
@@ -39,9 +40,11 @@ export default function Home() {
       parallax.style.height = `${containerHeight}px`;
 
       parallax.style.left = `-${itemPerLeft * (i % column)}px`;
-      parallax.style.backgroundImage = `url(${
-        images[Math.floor(Math.random() * images.length)]
-      })`;
+      !parallax.hasAttribute("data-image") &&
+        (parallax.style.backgroundImage = `url(${
+          images[Math.floor(Math.random() * images.length)]
+        })`);
+      parallax.setAttribute("data-image", "true");
     }
   }, []);
 
@@ -59,6 +62,7 @@ export default function Home() {
 
   return (
     <div id="root">
+      <Nav />
       <div className="container" ref={containerRef}>
         <div className="wrapper">
           {ITEMS.map((_, index) => (
