@@ -95,12 +95,13 @@ export default function Home4() {
         <style jsx global>{`
           html,
           body {
+            height: 100%;
             overflow: hidden;
             -webkit-overflow-scrolling: auto;
           }
 
           body > div {
-            height: 100vh;
+            height: 100%;
           }
 
           * {
@@ -111,7 +112,7 @@ export default function Home4() {
         `}</style>
         <style jsx>{`
           .container {
-            height: 100vh;
+            height: 100%;
             position: relative;
             overflow-x: hidden;
             overflow-y: auto;
