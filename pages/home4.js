@@ -77,7 +77,13 @@ export default function Home4() {
   return (
     <>
       <Nav />
-      <div className="container" ref={containerRef}>
+      <div
+        className="container"
+        ref={containerRef}
+        onTouchMove={e => {
+          e.stopPropagation();
+        }}
+      >
         <div className="wrapper" ref={wrapperRef}>
           {times(TIMES_SIZE, index => (
             <div key={index} className="column">
