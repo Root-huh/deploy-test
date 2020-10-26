@@ -1,8 +1,11 @@
 export default function Nav() {
   return (
     <div className="nav">
-      <button onClick={() => window.location.assign("/")}>Home</button>
-      <button onClick={() => window.location.assign("/home2")}>Home2</button>
+      {HREF_LIST.map(item => (
+        <button key={item} onClick={() => window.location.assign(item)}>
+          {item}
+        </button>
+      ))}
       <style jsx>{`
         .nav {
           position: fixed;
@@ -23,3 +26,5 @@ export default function Nav() {
     </div>
   );
 }
+
+const HREF_LIST = ["/", "/home2", "/home3"];

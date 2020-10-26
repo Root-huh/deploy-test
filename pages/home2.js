@@ -1,6 +1,9 @@
+import Nav from "../src/component/Nav";
+
 export default function Home2() {
   return (
     <div id="root">
+      <Nav />
       <div id="parallax">
         {ITEM_LIST.map((_, index) => (
           <div
@@ -51,7 +54,7 @@ export default function Home2() {
           height: 100vh;
           position: relative;
           transform-style: preserve-3d;
-          overflow: hidden;
+          overflow-y: hidden;
         }
 
         .layer {
