@@ -1,4 +1,4 @@
-export default function Nav() {
+export default function Nav({ element }) {
   return (
     <div className="nav">
       {HREF_LIST.map(item => (
@@ -6,6 +6,7 @@ export default function Nav() {
           {item}
         </button>
       ))}
+      {element && element}
       <style jsx>{`
         .nav {
           position: fixed;

@@ -1,12 +1,27 @@
+import { useState } from "react";
 import Nav from "../src/component/Nav";
 
 export default function Home3() {
+  const [toggle, setToggle] = useState(false);
   return (
     <>
-      <Nav />
+      <Nav
+        element={
+          <button onClick={() => setToggle(!toggle)}>
+            Toogle Group Overflow Hidden
+          </button>
+        }
+      />
       <div className="parallax">
         {ITEM_LIST.map((item, index) => (
-          <div key={index} className="group" style={{ zIndex: item.zIndex }}>
+          <div
+            key={index}
+            className="group"
+            style={{
+              zIndex: item.zIndex,
+              overflow: toggle ? "hidden" : "visible",
+            }}
+          >
             {item.layers.map((layer, index2) => (
               <div
                 key={index2}
@@ -39,14 +54,13 @@ export default function Home3() {
           height: 100vh;
           overflow-x: hidden;
           overflow-y: auto;
-          perspective: 300px;
+          perspective: ${TRANSLATE_Z}px;
         }
 
         .group {
           transform-style: preserve-3d;
           height: 100vh;
           position: relative;
-          overflow: hidden;
         }
 
         .layer {
@@ -64,12 +78,12 @@ export default function Home3() {
 
         .back {
           z-index: 3;
-          transform: translateZ(-300px) scale(2);
+          transform: translateZ(-${TRANSLATE_Z}px) scale(2);
         }
 
         .deep {
           z-index: 2;
-          transform: translateZ(-600px) scale(3);
+          transform: translateZ(-${TRANSLATE_Z * 2}px) scale(3);
         }
 
         .title {
@@ -85,6 +99,8 @@ export default function Home3() {
     </>
   );
 }
+
+const TRANSLATE_Z = 1;
 
 const ITEM_LIST = [
   {
