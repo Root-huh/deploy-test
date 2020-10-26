@@ -1,8 +1,24 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Nav from "../src/component/Nav";
 
 export default function Home3() {
   const [toggle, setToggle] = useState(false);
+  const parallaxRef = useRef(null);
+
+  //   useEffect(() => {
+  //     const parallax = parallaxRef.current;
+  //     if (!parallax) return;
+
+  //     let offsetHeight = 0;
+  //     for (const children of parallax.children) {
+  //       //   console.log("tttt", children.offsetHeight);
+  //       offsetHeight += children.offsetHeight;
+  //     }
+  //     console.log("tttt", { offsetHeight });
+
+  //     // parallax.style.height = `${offsetHeight}px`;
+  //   }, []);
+
   return (
     <>
       <Nav
@@ -12,7 +28,7 @@ export default function Home3() {
           </button>
         }
       />
-      <div className="parallax">
+      <div className="parallax" ref={parallaxRef}>
         {ITEM_LIST.map((item, index) => (
           <div
             key={index}
