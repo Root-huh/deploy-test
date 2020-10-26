@@ -90,6 +90,7 @@ export default function Home4() {
           html,
           body {
             overflow: hidden;
+            -webkit-overflow-scrolling: auto;
           }
 
           body > div {
