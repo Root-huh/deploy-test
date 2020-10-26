@@ -108,6 +108,7 @@ export default function Home4() {
             position: relative;
             overflow-x: hidden;
             overflow-y: auto;
+            -webkit-overflow-scrolling: auto;
           }
 
           .wrapper {
