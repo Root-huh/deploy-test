@@ -12,8 +12,9 @@ export default function Overtime() {
   useEffect(() => {
     if (!totalSalary || !overtime || !nightworkTime) {
       setTotalPay1(0);
-      setTotalPay1(0);
-      setTotalPay1(0);
+      setTotalPay2(0);
+      setTotalPay3(0);
+      setTotalPay4(0);
       return;
     }
     const pay = totalSalary / 12 / 239;
