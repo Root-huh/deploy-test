@@ -52,7 +52,8 @@ export default function Overtime() {
             value={totalSalary}
             onChange={e => setTotalSalary(getNumber(e.target.value))}
           />
-          <label style={{ marginLeft: '15px', fontSize: '13px' }}>
+          <br />
+          <label style={{ fontSize: '13px', color: '#888', marginTop: '10px' }}>
             {getComma(totalSalary)}원 ÷ 12 ÷ 239 = {getComma(Math.round(totalSalary / 12 / 239))}원 (시간급)
           </label>
       </div>
@@ -112,18 +113,22 @@ export default function Overtime() {
           height: 100%;
         }
 
-        div {
+        #root div {
           padding: 10px;
           border-bottom: solid 1px gray;
         }
 
-        label {
-          min-width: 200px;
+        #root label {
+          min-width: 120px;
           display: inline-block;
         }
 
-        p {
+        #root p {
           margin: 4px 0;
+        }
+
+        #root input {
+          width: 150px;
         }
       `}</style>
     </div>
