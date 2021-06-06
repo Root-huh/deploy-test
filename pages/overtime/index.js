@@ -55,7 +55,9 @@ export default function Overtime() {
             name="total-salary"
             value={totalSalary}
             onChange={e => setTotalSalary(getNumber(e.target.value))}
+            style={{ width: '100px' }}
           />
+          <span style={{ fontSize: '13px', marginLeft: '5px' }}>만(원)</span>
           <br />
           <label style={{ fontSize: '13px', color: '#888', marginTop: '10px' }}>
             {getComma(totalSalary * 10000)}원 ÷ 12 ÷ 239 = {getComma(Math.round((totalSalary * 10000) / 12 / 239))}원 (시간급)
