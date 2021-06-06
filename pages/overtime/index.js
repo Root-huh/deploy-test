@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
+import Head from 'next/head';
 
 export default function Overtime() {
-  const [totalSalary, setTotalSalary] = useState(40000000);
+  const [totalSalary, setTotalSalary] = useState(4000);
   const [overtime, setOvertime] = useState(40);
   const [nightworkTime, setNightworkTime] = useState(20);
   const [breaktime, setBreaktime] = useState(0);
@@ -17,7 +18,7 @@ export default function Overtime() {
       setTotalPay4(0);
       return;
     }
-    const pay = totalSalary / 12 / 239;
+    const pay = (totalSalary * 10000) / 12 / 239;
     const _pay1 = overtime <= 0 ? 0 : Math.round((pay * 1.5) * (overtime - 20));
     const _pay2 = Math.round((pay * 0.5) * nightworkTime);
     const _pay3 = Math.round((pay * 0.5) * breaktime);
@@ -28,6 +29,9 @@ export default function Overtime() {
   }, [totalSalary, overtime, nightworkTime, breaktime]);
   return (
     <div id="root">
+      <Head>
+        <title>루트가 만든 야근비 계산기</title>
+      </Head>
       <div>
         <p style={{ backgroundColor: '#eee', padding: '10px', fontSize: '14px' }}>
           ex)<br />
@@ -54,7 +58,7 @@ export default function Overtime() {
           />
           <br />
           <label style={{ fontSize: '13px', color: '#888', marginTop: '10px' }}>
-            {getComma(totalSalary)}원 ÷ 12 ÷ 239 = {getComma(Math.round(totalSalary / 12 / 239))}원 (시간급)
+            {getComma(totalSalary * 10000)}원 ÷ 12 ÷ 239 = {getComma(Math.round((totalSalary * 10000) / 12 / 239))}원 (시간급)
           </label>
       </div>
       <div>
