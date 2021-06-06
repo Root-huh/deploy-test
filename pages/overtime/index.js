@@ -10,7 +10,7 @@ export default function Overtime() {
   const [totalPay3, setTotalPay3] = useState(0);
   const [totalPay4, setTotalPay4] = useState(0);
   useEffect(() => {
-    if (!totalSalary || !overtime || !nightworkTime) {
+    if (!totalSalary) {
       setTotalPay1(0);
       setTotalPay2(0);
       setTotalPay3(0);
