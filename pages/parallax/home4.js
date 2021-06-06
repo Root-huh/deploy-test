@@ -1,6 +1,6 @@
 import times from "lodash/times";
 import { useCallback, useEffect, useRef } from "react";
-import Nav from "../src/component/Nav";
+import Nav from "../../src/component/Nav";
 
 export default function Home4() {
   const containerRef = useRef(null);

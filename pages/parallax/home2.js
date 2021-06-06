@@ -1,4 +1,4 @@
-import Nav from "../src/component/Nav";
+import Nav from "../../src/component/Nav";
 
 export default function Home2() {
   return (

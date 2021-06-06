@@ -28,4 +28,4 @@ export default function Nav({ element }) {
   );
 }
 
-const HREF_LIST = ["/", "/home2", "/home3", "/home4"];
+const HREF_LIST = ["/parallax", "/parallax/home2", "/parallax/home3", "/parallax/home4"];

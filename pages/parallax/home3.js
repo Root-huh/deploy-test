@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import Nav from "../src/component/Nav";
+import Nav from "../../src/component/Nav";
 
 export default function Home3() {
   const [toggle, setToggle] = useState(false);
