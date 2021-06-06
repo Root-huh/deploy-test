@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react"
 
 export default function Overtime() {
-  const [totalSalary, setTotalSalary] = useState(0);
-  const [overtime, setOvertime] = useState(0);
-  const [nightworkTime, setNightworkTime] = useState(0);
+  const [totalSalary, setTotalSalary] = useState(40000000);
+  const [overtime, setOvertime] = useState(40);
+  const [nightworkTime, setNightworkTime] = useState(20);
   const [breaktime, setBreaktime] = useState(0);
   const [totalPay1, setTotalPay1] = useState(0);
   const [totalPay2, setTotalPay2] = useState(0);
@@ -28,6 +28,22 @@ export default function Overtime() {
   return (
     <div id="root">
       <div>
+        <p style={{ backgroundColor: '#eee', padding: '10px', fontSize: '14px' }}>
+          ex)<br />
+          연봉 4,000일때<br />
+          (4,000 / 12) / 239 = 13,947원<br /><br />
+
+          연장근무 40시간, 야간근무 20시간 했을 때<br />
+          (13,947 * 1.5) * (40 - 20) = 418,410<br />
+          (13,947 * 0.5) * 20 = 139,470<br /><br />
+
+          418,410 + 139,470 = 557,880
+        </p>
+      </div>
+      <div>
+        <label><strong>(분 단위는 체크하지 않음)</strong></label>
+      </div>
+      <div>
           <label htmlFor="total-salary">내 연봉</label>
           <input
             id="total-salary"
@@ -35,6 +51,9 @@ export default function Overtime() {
             value={totalSalary}
             onChange={e => setTotalSalary(getNumber(e.target.value))}
           />
+          <label style={{ marginLeft: '15px', fontSize: '13px' }}>
+            {getComma(totalSalary)}원 ÷ 12 ÷ 239 = {getComma(Math.round(totalSalary / 12 / 239))}원 (시간급)
+          </label>
       </div>
       <div>
           <label htmlFor="overtime">연장근로시간</label>
@@ -44,31 +63,34 @@ export default function Overtime() {
             value={overtime}
             onChange={e => setOvertime(getNumber(e.target.value))}
           />
+          <label style={{ marginLeft: '15px', fontSize: '13px' }}>시간</label>
       </div>
       <div>
-          <label htmlFor="overtime">야간근로시간</label>
+          <label htmlFor="nightwork-time">야간근로시간</label>
           <input
             id="nightwork-time"
             name="nightwork-time"
             value={nightworkTime}
             onChange={e => setNightworkTime(getNumber(e.target.value))}
           />
+          <label style={{ marginLeft: '15px', fontSize: '13px' }}>시간</label>
       </div>
       <div>
-          <label htmlFor="overtime">휴일근무시간</label>
+          <label htmlFor="break-time">휴일근무시간</label>
           <input
             id="break-time"
             name="break-time"
             value={breaktime}
             onChange={e => setBreaktime(getNumber(e.target.value))}
           />
+          <label style={{ marginLeft: '15px', fontSize: '13px' }}>시간</label>
       </div>
       <div>
-          <p>이번달 내 야근비는?</p>
-          <p>연장근로: {getComma(totalPay1)}</p>
-          <p>야간근로: {getComma(totalPay2)}</p>
-          <p>휴일근무: {getComma(totalPay3)}</p>
-          <p>= {getComma(totalPay4)}</p>
+          <p><strong>이번달 내 야근비는?</strong></p>
+          <p style={{ marginTop: '10px' }}><label>연장근로</label>= {getComma(totalPay1)}원</p>
+          <p><label>야간근로</label>= {getComma(totalPay2)}원</p>
+          <p><label>휴일근무</label>= {getComma(totalPay3)}원</p>
+          <p><label>총 야근비</label>= {getComma(totalPay4)}원</p>
       </div>
 
       <style jsx global>{`
@@ -87,6 +109,20 @@ export default function Overtime() {
         body > div,
         #root {
           height: 100%;
+        }
+
+        div {
+          padding: 10px;
+          border-bottom: solid 1px gray;
+        }
+
+        label {
+          min-width: 200px;
+          display: inline-block;
+        }
+
+        p {
+          margin: 4px 0;
         }
       `}</style>
     </div>
