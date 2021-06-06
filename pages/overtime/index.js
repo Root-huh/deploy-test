@@ -65,7 +65,6 @@ export default function Overtime() {
             value={overtime}
             onChange={e => setOvertime(getNumber(e.target.value))}
           />
-          <label style={{ marginLeft: '15px', fontSize: '13px' }}>시간</label>
       </div>
       <div>
           <label htmlFor="nightwork-time">야간근로시간</label>
@@ -75,7 +74,6 @@ export default function Overtime() {
             value={nightworkTime}
             onChange={e => setNightworkTime(getNumber(e.target.value))}
           />
-          <label style={{ marginLeft: '15px', fontSize: '13px' }}>시간</label>
       </div>
       <div>
           <label htmlFor="break-time">휴일근무시간</label>
@@ -85,7 +83,6 @@ export default function Overtime() {
             value={breaktime}
             onChange={e => setBreaktime(getNumber(e.target.value))}
           />
-          <label style={{ marginLeft: '15px', fontSize: '13px' }}>시간</label>
       </div>
       <div>
           <p><strong>이번달 내 야근비는?</strong></p>
@@ -129,6 +126,7 @@ export default function Overtime() {
 
         #root input {
           width: 150px;
+          padding: 3px 6px;
         }
       `}</style>
     </div>
