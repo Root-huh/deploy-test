@@ -4,27 +4,28 @@ import { useEffect, useRef } from 'react';
 export default function Event() {
     const cvsRef = useRef(null);
     const boxRef = useRef(null);
+    const scrollRef = useRef(null);
 
     useEffect(() => {
         const cvs = cvsRef.current;
         const box = boxRef.current;
-        if (!cvs || !box) return;
+        const scrollEl = scrollRef.current;
+        if (!cvs || !box || !scrollEl) return;
 
-        let windowHeight = window.innerHeight;
+        let height = scrollEl.offsetHeight;
         const resize = () => {
-            const height = window.innerHeight;
-            const width = window.innerWidth;
+            const _height = scrollEl.offsetHeight;
             requestAnimationFrame(() => {
-                windowHeight = height;
-                box.style.minHeight = `${height * 4}px`;
+                height = _height;
+                box.style.minHeight = `${_height * 4}px`;
                 animate();
             });
         };
         
         let lastScroll = 0;
         const animate = () => {
-            const point = windowHeight * 4;
-            const calc = (windowHeight + lastScroll) - point;
+            const point = height * 4;
+            const calc = (height + lastScroll) - point;
             if (calc > 0) {
                 cvs.classList.add('absolute');
             } else {
@@ -35,15 +36,15 @@ export default function Event() {
             // cvs.style.transform = `translate3d(0, ${-translateY}px, 0)`;
         };
         const scroll = () => {
-            lastScroll = window.scrollY;
+            lastScroll = scrollEl.scrollTop;
             requestAnimationFrame(animate);
         };
 
         resize();
-        window.addEventListener('scroll', scroll);
+        scrollEl.addEventListener('scroll', scroll);
         window.addEventListener('resize', resize);
         return () => {
-            window.removeEventListener('scroll', scroll);
+            scrollEl.removeEventListener('scroll', scroll);
             window.removeEventListener('resize', resize);
         };
     }, []);
@@ -54,39 +55,40 @@ export default function Event() {
                 <title>얼라이브 스크롤 테스트</title>
             </Head>
 
-            
-            <div className="container" ref={boxRef}>
-                <canvas ref={cvsRef} />
-            </div>
-            <div className="grid-system">
-                <div>Column 1 - 1</div>
-                <div>Column 2 - 1</div>
-                <div>Column 3 - 1</div>
-            </div>
-            <div className="grid-system">
-                <div>Column 1 - 2</div>
-                <div>Column 2 - 2</div>
-                <div>Column 3 - 2</div>
-            </div>
-            <div className="grid-system">
-                <div>Column 1 - 3</div>
-                <div>Column 2 - 3</div>
-                <div>Column 3 - 3</div>
-            </div>
-            <div className="grid-system">
-                <div>Column 1 - 4</div>
-                <div>Column 2 - 4</div>
-                <div>Column 3 - 4</div>
-            </div>
-            <div className="grid-system">
-                <div>Column 1 - 5</div>
-                <div>Column 2 - 5</div>
-                <div>Column 3 - 5</div>
-            </div>
-            <div className="grid-system">
-                <div>Column 1 - 6</div>
-                <div>Column 2 - 6</div>
-                <div>Column 3 - 6</div>
+            <div className="scroll" ref={scrollRef}>
+                <div className="container" ref={boxRef}>
+                    <canvas ref={cvsRef} />
+                </div>
+                <div className="grid-system">
+                    <div>Column 1 - 1</div>
+                    <div>Column 2 - 1</div>
+                    <div>Column 3 - 1</div>
+                </div>
+                <div className="grid-system">
+                    <div>Column 1 - 2</div>
+                    <div>Column 2 - 2</div>
+                    <div>Column 3 - 2</div>
+                </div>
+                <div className="grid-system">
+                    <div>Column 1 - 3</div>
+                    <div>Column 2 - 3</div>
+                    <div>Column 3 - 3</div>
+                </div>
+                <div className="grid-system">
+                    <div>Column 1 - 4</div>
+                    <div>Column 2 - 4</div>
+                    <div>Column 3 - 4</div>
+                </div>
+                <div className="grid-system">
+                    <div>Column 1 - 5</div>
+                    <div>Column 2 - 5</div>
+                    <div>Column 3 - 5</div>
+                </div>
+                <div className="grid-system">
+                    <div>Column 1 - 6</div>
+                    <div>Column 2 - 6</div>
+                    <div>Column 3 - 6</div>
+                </div>
             </div>
 
             <style jsx global>{`
@@ -105,8 +107,8 @@ export default function Event() {
                 }
 
                 canvas {
-                    width: 100vw;
-                    height: 100vh;
+                    width: 100%;
+                    height: 100%;
                     position: fixed;
                     left: 0;
                     top: 0;
@@ -119,6 +121,13 @@ export default function Event() {
                     top: auto;
                     bottom: 0;
                     position: absolute;
+                }
+
+                .scroll {
+                    width: 100%;
+                    height: 100%;
+                    overflow-x: hidden;
+                    overflow-y: auto;
                 }
 
                 .container {
