@@ -33,8 +33,11 @@ export default function Event() {
 
         const animate = () => {
             const point = windowHeight * 4;
-            const translateY = Math.min(windowHeight + 10, Math.max(0, (windowHeight + lastScroll) - point));
-            cvs.style.transform = `translate3d(0, ${-translateY}px, 0)`;
+            // const translateY = Math.min(windowHeight + 10, Math.max(0, (windowHeight + lastScroll) - point));
+            // cvs.style.transform = `translate3d(0, ${-translateY}px, 0)`;
+
+            const calc = (windowHeight + lastScroll) - point;
+            cvs.style.position = calc > 0 ? 'absolute' : 'fixed';
         };
         const scroll = () => {
             lastScroll = window.scrollY;
@@ -56,8 +59,9 @@ export default function Event() {
                 <title>얼라이브 스크롤 테스트</title>
             </Head>
 
-            <canvas ref={cvsRef} />
-            <div className="container" ref={boxRef} />
+            <div className="container" ref={boxRef}>
+                <canvas ref={cvsRef} />
+            </div>
             <div className="grid-system">
                 <div>Column 1 - 1</div>
                 <div>Column 2 - 1</div>
@@ -109,7 +113,7 @@ export default function Event() {
                     height: 100%;
                     position: fixed;
                     left: 0;
-                    top: 0;
+                    bottom: 0;
                     background-color: rgba(0, 0, 0, 0.4);
                     z-index: -1;
                     transform: translate3d(0, 0, 0);
@@ -117,6 +121,7 @@ export default function Event() {
 
                 .container {
                     width: 100%;
+                    height: 100%;
                     position: relative;
                 }
 
