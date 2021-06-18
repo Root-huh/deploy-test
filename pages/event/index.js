@@ -26,8 +26,11 @@ export default function Event() {
         let lastScroll = 0;
         const animate = () => {
             const point = windowHeight * 4;
-            const calc = (windowHeight + lastScroll) - point;
-            cvs.style.position = calc > 0 ? 'absolute' : 'fixed';
+            // const calc = (windowHeight + lastScroll) - point;
+            // cvs.style.position = calc > 0 ? 'absolute' : 'fixed';
+
+            const translateY = Math.min(windowHeight + 10, Math.max(0, (windowHeight + lastScroll) - point));
+            cvs.style.transform = `translate3d(0, ${-translateY}px, 0)`;
         };
         const scroll = () => {
             lastScroll = window.scrollY;
@@ -42,30 +45,6 @@ export default function Event() {
             window.removeEventListener('resize', resize);
         };
     }, []);
-
-    // useEffect(() => {
-    //     const cvs = cvsRef.current;
-    //     if (!cvs) return;
-
-    //     let lastScroll = 0;
-    //     let windowHeight = window.innerHeight;
-
-    //     const animate = () => {
-    //         const point = windowHeight * 4;
-    //         const translateY = Math.min(windowHeight + 10, Math.max(0, (windowHeight + lastScroll) - point));
-    //         cvs.style.transform = `translate3d(0, ${-translateY}px, 0)`;
-    //     };
-    //     const scroll = () => {
-    //         lastScroll = window.scrollY;
-    //         requestAnimationFrame(animate);
-    //     };
-
-    //     scroll();
-    //     window.addEventListener('scroll', scroll);
-    //     return () => {
-    //         window.removeEventListener('scroll', scroll);
-    //     };
-    // }, []);
 
     return (
         <div id="root">
