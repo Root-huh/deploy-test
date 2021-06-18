@@ -14,9 +14,14 @@ export default function Event() {
 
         let height = scrollEl.offsetHeight;
         const resize = () => {
+            const _width = scrollEl.offsetWidth;
             const _height = scrollEl.offsetHeight;
             requestAnimationFrame(() => {
                 height = _height;
+                cvs.width = _width;
+                cvs.height = _height;
+                cvs.style.width = `${_width}px`;
+                cvs.style.height = `${_height}px`;
                 box.style.minHeight = `${_height * 4}px`;
                 animate();
             });
@@ -112,7 +117,9 @@ export default function Event() {
                     position: fixed;
                     left: 0;
                     top: 0;
-                    background-color: rgba(0, 0, 0, 0.4);
+                    background-image: url(https://th-a.kakaopagecdn.com/P/C/15/bg/2x/86031559-1ad5-4265-b7b0-2dd44245def4.jpg);
+                    background-size: cover;
+                    background-repeat: no-repeat;
                     z-index: -1;
                     transform: translate3d(0, 0, 0);
                     pointer-events: none;
