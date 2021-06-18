@@ -30,7 +30,8 @@ export default function Event() {
             // cvs.style.position = calc > 0 ? 'absolute' : 'fixed';
 
             const translateY = Math.min(windowHeight + 10, Math.max(0, (windowHeight + lastScroll) - point));
-            cvs.style.transform = `translate3d(0, ${-translateY}px, 0)`;
+            // cvs.style.transform = `translate3d(0, ${-translateY}px, 0)`;
+            cvs.style.transform = `matrix(1, 0, 0, 1, 0, -${translateY})`;
         };
         const scroll = () => {
             lastScroll = window.scrollY;
