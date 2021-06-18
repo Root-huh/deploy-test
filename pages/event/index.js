@@ -10,48 +10,62 @@ export default function Event() {
         const box = boxRef.current;
         if (!cvs || !box) return;
 
+        let windowHeight = window.innerHeight;
         const resize = () => {
             const height = window.innerHeight;
-            cvs.width = window.innerWidth;
-            cvs.height = height;
-            box.style.minHeight = `${height * 4}px`;
+            const width = window.innerWidth;
+            requestAnimationFrame(() => {
+                windowHeight = height;
+                cvs.width = width;
+                cvs.height = height;
+                box.style.minHeight = `${height * 4}px`;
+                scroll();
+            });
         };
-
-        resize();
-        window.addEventListener('resize', resize);
-        return () => {
-            window.removeEventListener('resize', resize);
-        };
-    }, []);
-
-    useEffect(() => {
-        const cvs = cvsRef.current;
-        if (!cvs) return;
-
+        
         let lastScroll = 0;
-        let windowHeight = window.innerHeight;
-
         const animate = () => {
             const point = windowHeight * 4;
-            // const translateY = Math.min(windowHeight + 10, Math.max(0, (windowHeight + lastScroll) - point));
-            // cvs.style.transform = `translate3d(0, ${-translateY}px, 0)`;
-
             const calc = (windowHeight + lastScroll) - point;
             cvs.style.position = calc > 0 ? 'absolute' : 'fixed';
         };
         const scroll = () => {
             lastScroll = window.scrollY;
-            windowHeight = window.innerHeight;
-
             requestAnimationFrame(animate);
         };
 
-        scroll();
+        resize();
         window.addEventListener('scroll', scroll);
+        window.addEventListener('resize', resize);
         return () => {
             window.removeEventListener('scroll', scroll);
+            window.removeEventListener('resize', resize);
         };
     }, []);
+
+    // useEffect(() => {
+    //     const cvs = cvsRef.current;
+    //     if (!cvs) return;
+
+    //     let lastScroll = 0;
+    //     let windowHeight = window.innerHeight;
+
+    //     const animate = () => {
+    //         const point = windowHeight * 4;
+    //         const translateY = Math.min(windowHeight + 10, Math.max(0, (windowHeight + lastScroll) - point));
+    //         cvs.style.transform = `translate3d(0, ${-translateY}px, 0)`;
+    //     };
+    //     const scroll = () => {
+    //         lastScroll = window.scrollY;
+    //         requestAnimationFrame(animate);
+    //     };
+
+    //     scroll();
+    //     window.addEventListener('scroll', scroll);
+    //     return () => {
+    //         window.removeEventListener('scroll', scroll);
+    //     };
+    // }, []);
 
     return (
         <div id="root">
