@@ -16,8 +16,8 @@ export default function Event() {
             const width = window.innerWidth;
             requestAnimationFrame(() => {
                 windowHeight = height;
-                cvs.width = width;
-                cvs.height = height;
+                // cvs.width = width;
+                // cvs.height = height;
                 box.style.minHeight = `${height * 4}px`;
                 scroll();
             });
@@ -106,7 +106,7 @@ export default function Event() {
                     height: 100%;
                     position: fixed;
                     left: 0;
-                    bottom: 0;
+                    top: 0;
                     background-color: rgba(0, 0, 0, 0.4);
                     z-index: -1;
                     transform: translate3d(0, 0, 0);
