@@ -52,9 +52,8 @@ export default function Event() {
                 <title>얼라이브 스크롤 테스트</title>
             </Head>
 
-            <div className="container" ref={boxRef}>
-                <canvas ref={cvsRef} />
-            </div>
+            <canvas ref={cvsRef} />
+            <div className="container" ref={boxRef} />
             <div className="grid-system">
                 <div>Column 1 - 1</div>
                 <div>Column 2 - 1</div>
