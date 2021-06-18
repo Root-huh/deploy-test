@@ -16,22 +16,23 @@ export default function Event() {
             const width = window.innerWidth;
             requestAnimationFrame(() => {
                 windowHeight = height;
-                // cvs.width = width;
-                // cvs.height = height;
                 box.style.minHeight = `${height * 4}px`;
-                scroll();
+                animate();
             });
         };
         
         let lastScroll = 0;
         const animate = () => {
             const point = windowHeight * 4;
-            // const calc = (windowHeight + lastScroll) - point;
-            // cvs.style.position = calc > 0 ? 'absolute' : 'fixed';
+            const calc = (windowHeight + lastScroll) - point;
+            if (calc > 0) {
+                cvs.classList.add('absolute');
+            } else {
+                cvs.classList.remove('absolute');
+            }
 
-            const translateY = Math.min(windowHeight + 10, Math.max(0, (windowHeight + lastScroll) - point));
+            // const translateY = Math.min(windowHeight + 10, Math.max(0, (windowHeight + lastScroll) - point));
             // cvs.style.transform = `translate3d(0, ${-translateY}px, 0)`;
-            cvs.style.transform = `matrix(1, 0, 0, 1, 0, -${translateY})`;
         };
         const scroll = () => {
             lastScroll = window.scrollY;
@@ -53,8 +54,10 @@ export default function Event() {
                 <title>얼라이브 스크롤 테스트</title>
             </Head>
 
-            <canvas ref={cvsRef} />
-            <div className="container" ref={boxRef} />
+            
+            <div className="container" ref={boxRef}>
+                <canvas ref={cvsRef} />
+            </div>
             <div className="grid-system">
                 <div>Column 1 - 1</div>
                 <div>Column 2 - 1</div>
@@ -102,14 +105,20 @@ export default function Event() {
                 }
 
                 canvas {
-                    width: 100%;
-                    height: 100%;
+                    width: 100vw;
+                    height: 100vh;
                     position: fixed;
                     left: 0;
                     top: 0;
                     background-color: rgba(0, 0, 0, 0.4);
                     z-index: -1;
                     transform: translate3d(0, 0, 0);
+                    pointer-events: none;
+                }
+                canvas.absolute {
+                    top: auto;
+                    bottom: 0;
+                    position: absolute;
                 }
 
                 .container {
