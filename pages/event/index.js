@@ -1,44 +1,50 @@
 import Head from 'next/head';
 import { useEffect, useRef } from 'react';
+// import ALIVE_VIDEO from '../../public/alive.mp4';
 
 export default function Event() {
-    const cvsRef = useRef(null);
+    const videoRef = useRef(null);
     const boxRef = useRef(null);
     const scrollRef = useRef(null);
 
     useEffect(() => {
-        const cvs = cvsRef.current;
+        const video = videoRef.current;
         const box = boxRef.current;
         const scrollEl = scrollRef.current;
-        if (!cvs || !box || !scrollEl) return;
+        if (!video || !box || !scrollEl) return;
 
+        let adder = 1.5;
+        let duration = 0;
         let height = scrollEl.offsetHeight;
         const resize = () => {
             const _width = scrollEl.offsetWidth;
             const _height = scrollEl.offsetHeight;
+            const _duration = video.duration;
             requestAnimationFrame(() => {
                 height = _height;
-                cvs.width = _width;
-                cvs.height = _height;
-                cvs.style.width = `${_width}px`;
-                cvs.style.height = `${_height}px`;
-                box.style.minHeight = `${_height * 4}px`;
+                duration = _duration;
+
+                video.style.width = `${_width}px`;
+                video.style.height = `${_height}px`;
+                box.style.height = `${Math.round(_duration * (_height * adder))}px`;
                 animate();
             });
         };
         
         let lastScroll = 0;
         const animate = () => {
-            const point = height * 4;
+            const adderHeight = height * adder;
+            const point = Math.round(duration * (adderHeight));
             const calc = (height + lastScroll) - point;
-            if (calc > 0) {
-                cvs.classList.add('absolute');
-            } else {
-                cvs.classList.remove('absolute');
-            }
+            const currentTime = lastScroll * (duration / (adderHeight + height));
 
-            // const translateY = Math.min(windowHeight + 10, Math.max(0, (windowHeight + lastScroll) - point));
-            // cvs.style.transform = `translate3d(0, ${-translateY}px, 0)`;
+            video.currentTime = currentTime;
+            if (calc > 0) {
+                video.classList.add('absolute');
+            } else {
+                video.classList.remove('absolute');
+            }
+            video.currentTime;
         };
         const scroll = () => {
             lastScroll = scrollEl.scrollTop;
@@ -62,7 +68,7 @@ export default function Event() {
 
             <div className="scroll" ref={scrollRef}>
                 <div className="container" ref={boxRef}>
-                    <canvas ref={cvsRef} />
+                    <video ref={videoRef} src="images/alive.mp4" />
                 </div>
                 <div className="grid-system">
                     <div>Column 1 - 1</div>
@@ -109,6 +115,21 @@ export default function Event() {
                 body > div > div {
                     height: 100%;
                     position: relative;
+                }
+
+                video {
+                    width: 100%;
+                    height: 100%;
+                    position: fixed;
+                    left: 0;
+                    top: 0;
+                    pointer-events: none;
+                    z-index: -1;
+                }
+                video.absolute {
+                    top: auto;
+                    bottom: 0;
+                    position: absolute;
                 }
 
                 canvas {
