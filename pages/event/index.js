@@ -16,10 +16,11 @@ export default function Event() {
         let adder = 1.5;
         let duration = 0;
         let height = scrollEl.offsetHeight;
+        let canPlay = !!video.duration;
         const resize = () => {
             const _width = scrollEl.offsetWidth;
             const _height = scrollEl.offsetHeight;
-            const _duration = video.duration;
+            const _duration = video.duration || 0;
             requestAnimationFrame(() => {
                 height = _height;
                 duration = _duration;
@@ -38,7 +39,7 @@ export default function Event() {
             const calc = (height + lastScroll) - point;
             const currentTime = lastScroll * (duration / (adderHeight + height));
 
-            video.currentTime = currentTime;
+            canPlay && (video.currentTime = currentTime);
             if (calc > 0) {
                 video.classList.add('absolute');
             } else {
@@ -50,13 +51,20 @@ export default function Event() {
             lastScroll = scrollEl.scrollTop;
             requestAnimationFrame(animate);
         };
+        const loadedMetaData = () => {
+            canPlay = true;
+            video.removeEventListener('loadedmetadata', loadedMetaData);
+            resize();
+        };
 
         resize();
         scrollEl.addEventListener('scroll', scroll);
         window.addEventListener('resize', resize);
+        video.addEventListener('loadedmetadata', loadedMetaData);
         return () => {
             scrollEl.removeEventListener('scroll', scroll);
             window.removeEventListener('resize', resize);
+            video.removeEventListener('loadedmetadata', loadedMetaData);
         };
     }, []);
 
@@ -68,7 +76,13 @@ export default function Event() {
 
             <div className="scroll" ref={scrollRef}>
                 <div className="container" ref={boxRef}>
-                    <video ref={videoRef} src="images/alive.mp4" />
+                    <video
+                        ref={videoRef}
+                        src="images/alive.mp4"
+                        // muted
+                        // autoPlay
+                        // playsInline
+                    />
                 </div>
                 <div className="grid-system">
                     <div>Column 1 - 1</div>
