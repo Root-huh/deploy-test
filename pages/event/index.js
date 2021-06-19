@@ -13,7 +13,6 @@ export default function Event() {
         const scrollEl = scrollRef.current;
         if (!video || !box || !scrollEl) return;
 
-        let adder = 1.5;
         let duration = 0;
         let height = scrollEl.offsetHeight;
         let canPlay = !!video.duration;
@@ -27,17 +26,16 @@ export default function Event() {
 
                 video.style.width = `${_width}px`;
                 video.style.height = `${_height}px`;
-                box.style.height = `${Math.round(_duration * (_height * adder))}px`;
+                box.style.height = `${Math.round(_duration * _height)}px`;
                 animate();
             });
         };
         
         let lastScroll = 0;
         const animate = () => {
-            const adderHeight = height * adder;
-            const point = Math.round(duration * (adderHeight));
+            const point = Math.round(duration * height);
             const calc = (height + lastScroll) - point;
-            const currentTime = lastScroll * (duration / (adderHeight + height));
+            const currentTime = lastScroll * (duration / height);
 
             canPlay && (video.currentTime = currentTime);
             if (calc > 0) {
@@ -79,9 +77,10 @@ export default function Event() {
                     <video
                         ref={videoRef}
                         src="images/alive.mp4"
-                        // muted
-                        // autoPlay
-                        // playsInline
+                        muted
+                        autoPlay
+                        playsInline
+                        onPlay={e => e.currentTarget.pause()}
                     />
                 </div>
                 <div className="grid-system">
