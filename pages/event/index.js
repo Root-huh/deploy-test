@@ -43,7 +43,6 @@ export default function Event() {
             } else {
                 video.classList.remove('absolute');
             }
-            video.currentTime;
         };
         const scroll = () => {
             lastScroll = scrollEl.scrollTop;
