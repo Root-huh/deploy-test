@@ -1,6 +1,5 @@
 import Head from 'next/head';
 import { useEffect, useRef } from 'react';
-// import ALIVE_VIDEO from '../../public/alive.mp4';
 import VIDEO from '../../public/images/alive2.webm';
 
 export default function AliveScrollTest() {
@@ -14,29 +13,39 @@ export default function AliveScrollTest() {
         const scrollEl = scrollRef.current;
         if (!video || !box || !scrollEl) return;
 
-        const perNum = 0.3;
+        const perNum = 3;
         let duration = 0;
         let height = scrollEl.offsetHeight;
         let canPlay = !!video.duration;
         const resize = () => {
+            const _width = scrollEl.offsetWidth;
             const _height = scrollEl.offsetHeight;
             const _duration = video.duration || 0;
             requestAnimationFrame(() => {
                 height = _height;
-                // video.height = height;
+                video.width = _width * 0.3;
+                video.height = height * 0.3;
+                video.style.transform = 'translateX(-50%) scale(4)';
                 duration = _duration;
                 box.style.height = `${Math.round(duration * (height * perNum))}px`;
                 animate();
             });
         };
         
+        let isSeeked = true;
+        const seeked = () => (isSeeked = true);
+
         let lastScroll = 0;
         const animate = () => {
             const point = Math.round(duration * (height * perNum));
             const calc = (height - (height * perNum) + lastScroll) - point;
             const currentTime = lastScroll * (duration / (duration * (height * perNum)));
 
-            canPlay && (video.currentTime = currentTime > duration ? duration : currentTime);
+            if (canPlay && isSeeked) {
+                video.pause();
+                isSeeked = false;
+                video.currentTime = currentTime > duration ? duration : currentTime;
+            }
             if (calc > 0 && !video.classList.contains('absolute')) {
                 video.classList.add('absolute');
             } else if (calc <= 0 && video.classList.contains('absolute')) {
@@ -47,20 +56,16 @@ export default function AliveScrollTest() {
             lastScroll = scrollEl.scrollTop;
             requestAnimationFrame(animate);
         };
-        const loadedMetaData = () => {
-            canPlay = true;
-            video.removeEventListener('loadedmetadata', loadedMetaData);
-            resize();
-        };
 
         resize();
-        scrollEl.addEventListener('scroll', scroll);
-        window.addEventListener('resize', resize);
-        video.addEventListener('loadedmetadata', loadedMetaData);
+        const passive = { passive: true };
+        scrollEl.addEventListener('scroll', scroll, passive);
+        window.addEventListener('resize', resize, passive);
+        video.addEventListener('seeked', seeked, passive);
         return () => {
-            scrollEl.removeEventListener('scroll', scroll);
-            window.removeEventListener('resize', resize);
-            video.removeEventListener('loadedmetadata', loadedMetaData);
+            scrollEl.removeEventListener('scroll', scroll, passive);
+            window.removeEventListener('resize', resize, passive);
+            video.removeEventListener('seeked', seeked, passive);
         };
     }, []);
 
@@ -73,13 +78,12 @@ export default function AliveScrollTest() {
             <div className="scroll" ref={scrollRef}>
                 <div className="container" ref={boxRef}>
                     <video
-                        ref={videoRef}
-                        preload="auto"
-                        // autoPlay
-                        // playsInline
-                        // muted
                         src={VIDEO}
-                        // onPlay={e => e.currentTarget.pause()}
+                        ref={videoRef}
+                        autoPlay
+                        playsInline
+                        muted
+                        onPlay={e => e.currentTarget.pause()}
                     />
                 </div>
                 <div className="grid-system">
@@ -130,10 +134,12 @@ export default function AliveScrollTest() {
                 }
 
                 video {
-                    width: 100vw;
-                    height: 100vh;
+                    width: 30%;
+                    height: 30%;
                     position: fixed;
-                    left: 0;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    transform-origin: 50% 0;
                     top: 0;
                     pointer-events: none;
                     z-index: -1;
@@ -141,25 +147,6 @@ export default function AliveScrollTest() {
                     object-position: 50% 50%;
                 }
                 video.absolute {
-                    top: auto;
-                    bottom: 0;
-                    position: absolute;
-                }
-
-                canvas {
-                    width: 100%;
-                    height: 100%;
-                    position: fixed;
-                    left: 0;
-                    top: 0;
-                    background-image: url(https://th-a.kakaopagecdn.com/P/C/15/bg/2x/86031559-1ad5-4265-b7b0-2dd44245def4.jpg);
-                    background-size: cover;
-                    background-repeat: no-repeat;
-                    z-index: -1;
-                    transform: translate3d(0, 0, 0);
-                    pointer-events: none;
-                }
-                canvas.absolute {
                     top: auto;
                     bottom: 0;
                     position: absolute;
@@ -173,8 +160,8 @@ export default function AliveScrollTest() {
                 }
 
                 .container {
-                    width: 100vw;
-                    height: 100vh;
+                    width: 100%;
+                    height: 100%;
                     position: relative;
                 }
 
