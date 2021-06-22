@@ -74,11 +74,12 @@ export default function AliveScrollTest() {
                 <div className="container" ref={boxRef}>
                     <video
                         ref={videoRef}
-                        autoPlay
-                        playsInline
-                        muted
+                        preload="auto"
+                        // autoPlay
+                        // playsInline
+                        // muted
                         src={VIDEO}
-                        onPlay={e => e.currentTarget.pause()}
+                        // onPlay={e => e.currentTarget.pause()}
                     />
                 </div>
                 <div className="grid-system">
